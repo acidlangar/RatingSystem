@@ -32,6 +32,10 @@ import java.util.TreeSet;
 
 import ratingsystem.connection.SQLConnection;
 
+import ratingsystem.dao.PartidoDao;
+
+import ratingsystem.dao.PartidoDaoImpl;
+
 import ratingsystem.dominio.GoalSupremacy;
 import ratingsystem.dominio.Partido;
 
@@ -42,29 +46,13 @@ public class Principal {
 
     public static void main(String[] args) {
 
+        PartidoDao partidoDao = new PartidoDaoImpl();
+        String criteria = "cd_liga=1";
+        List<Partido> partidos = partidoDao.consultarPartidos(criteria);
+        
         RatingMethod metodo = new GoalSupremacyMethod();
-        metodo.procesarPartidos();
-        /*
-        Connection con = SQLConnection.connectToID_BT();
-        
-        if (con != null) {
-            
-            Statement s1;
-            try {
-                s1 = con.createStatement();
-                ResultSet rs = s1.executeQuery("SELECT * FROM PARTIDO");
-                if(rs!=null){
-                    while (rs.next()){
-                        for(int i = 0; i <6 ;i++) {
-                            System.out.println(rs.getString(i));
-                        }
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }*/
-        
+        metodo.procesarPartidos(partidos);        
+                
     }
 
     

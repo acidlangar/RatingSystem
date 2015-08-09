@@ -1,30 +1,32 @@
 package ratingsystem.dominio;
 
+import java.util.Calendar;
+
 public class Partido {
     
-    private String liga;
+    private int liga;
      private String temporada;
-     private String fecha;
+     private Calendar fecha;
      private String eqL;
      private String eqV;
      private int golesL;
      private int golesV;
      private String resultado;
-     private String cuota1;
-     private String cuotaX;
-     private String cuota2;
+     private float cuota1;
+     private float cuotaX;
+     private float cuota2;
      private int diffGL;
      private int diffGV;
      /**
       * @return the liga
       */
-     public String getLiga() {
+     public int getLiga() {
              return liga;
      }
      /**
       * @param liga the liga to set
       */
-     public void setLiga(String liga) {
+     public void setLiga(int liga) {
              this.liga = liga;
      }
      /**
@@ -42,13 +44,13 @@ public class Partido {
      /**
       * @return the fecha
       */
-     public String getFecha() {
+     public Calendar getFecha() {
              return fecha;
      }
      /**
       * @param fecha the fecha to set
       */
-     public void setFecha(String fecha) {
+     public void setFecha(Calendar fecha) {
              this.fecha = fecha;
      }
      /**
@@ -114,37 +116,37 @@ public class Partido {
      /**
       * @return the cuota1
       */
-     public String getCuota1() {
+     public float getCuota1() {
              return cuota1;
      }
      /**
       * @param cuota1 the cuota1 to set
       */
-     public void setCuota1(String cuota1) {
+     public void setCuota1(float cuota1) {
              this.cuota1 = cuota1;
      }
      /**
       * @return the cuotaX
       */
-     public String getCuotaX() {
+     public float getCuotaX() {
              return cuotaX;
      }
      /**
       * @param cuotaX the cuotaX to set
       */
-     public void setCuotaX(String cuotaX) {
+     public void setCuotaX(float cuotaX) {
              this.cuotaX = cuotaX;
      }
      /**
       * @return the cuota2
       */
-     public String getCuota2() {
+     public float getCuota2() {
              return cuota2;
      }
      /**
       * @param cuota2 the cuota2 to set
       */
-     public void setCuota2(String cuota2) {
+     public void setCuota2(float cuota2) {
              this.cuota2 = cuota2;
      }
      /**
@@ -178,7 +180,7 @@ public class Partido {
      @Override
      public String toString() {
              return "" + liga + "\t" + temporada
-                             + "\t" + fecha + "\t" + eqL + "\t" + eqV
+                             + "\t" + fecha.getTime() + "\t" + eqL + "\t" + eqV
                              + "\t" + golesL + "\t" + golesV
                              + "\t" + resultado + "\t" + cuota1
                              + "\t" + cuotaX + "\t" + cuota2 + "\t"

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import ratingsystem.dominio.GoalSupremacy;
 import ratingsystem.dominio.Partido;
 
 public class GoalSupremacyMethod implements RatingMethod {
@@ -26,13 +27,10 @@ public class GoalSupremacyMethod implements RatingMethod {
     }
 
     @Override
-    public void procesarPartidos() {
+    public void procesarPartidos(List<Partido> partidosSource) {
         try {
-            String liga = "1";
+            int liga = 1;
             String temporada = "2004";
-            File fileOrigen = new File("C:\\Users\\edgar\\Downloads\\datos\\partidos.txt");
-            BufferedReader br = new BufferedReader(new FileReader(fileOrigen));
-            String line;
             List<Partido> partidosTemporada = new ArrayList<Partido>();
             List<Partido> partidos = new ArrayList<Partido>();
             Integer totalPartidos = 0;
@@ -43,29 +41,12 @@ public class GoalSupremacyMethod implements RatingMethod {
              File fileDestinoGoalSupremacy = new File("C:\\Users\\edgar\\Downloads\\datos\\goalSupremacy.txt");
              BufferedWriter bwGoalSupremacy = new BufferedWriter(new FileWriter(fileDestinoGoalSupremacy));
 
-             Map<Integer, ratingsystem.dominio.GoalSupremacy> goalSupremacyMapa = new TreeMap<Integer, ratingsystem.dominio.GoalSupremacy>();
-             ratingsystem.dominio.GoalSupremacy goalSupremacy;
+             Map<Integer, GoalSupremacy> goalSupremacyMapa = new TreeMap<Integer, GoalSupremacy>();
+             GoalSupremacy goalSupremacy;
                  
-            while ((line = br.readLine()) != null) {                
+            for (Partido partido : partidosSource) {
                 
-                StringTokenizer st = new StringTokenizer(line, "\t");
-                         
-                Partido partido = new Partido();
-                partido.setLiga(st.nextToken());
-                partido.setTemporada(st.nextToken());
-                partido.setFecha(st.nextToken());
-                partido.setEqL(st.nextToken());
-                partido.setEqV(st.nextToken());
-                partido.setGolesL(Integer.parseInt(st.nextToken()));
-                partido.setGolesV(Integer.parseInt(st.nextToken()));
-                partido.setResultado(st.nextToken());
-                partido.setCuota1(st.nextToken());
-                partido.setCuotaX(st.nextToken());
-                partido.setCuota2(st.nextToken());
-                partido.setDiffGL(Integer.parseInt(st.nextToken()));
-                partido.setDiffGV(Integer.parseInt(st.nextToken()));
-                         
-                 if (!partido.getLiga().equals(liga) || !partido.getTemporada().equals(temporada)) {
+                 if (partido.getLiga() != liga || !partido.getTemporada().equals(temporada)) {
                          liga = partido.getLiga();
                          temporada = partido.getTemporada();
                          for (Partido partidoL:partidosTemporada) {
@@ -119,7 +100,7 @@ public class GoalSupremacyMethod implements RatingMethod {
                     totalPartidos++;
                     goalSupremacy = goalSupremacyMapa.get(diferencia);
                     if( goalSupremacy == null ) {
-                        goalSupremacy = new ratingsystem.dominio.GoalSupremacy();
+                        goalSupremacy = new GoalSupremacy();
                     }
                     
                     switch (partido.getResultado()) {
@@ -149,7 +130,7 @@ public class GoalSupremacyMethod implements RatingMethod {
              Iterator i = goalSupremacyMapa.keySet().iterator();
              while(i.hasNext()){
                  Integer key = (Integer) i.next();
-                 ratingsystem.dominio.GoalSupremacy gs = goalSupremacyMapa.get(key);
+                 GoalSupremacy gs = goalSupremacyMapa.get(key);
                  bwGoalSupremacy.write(key + "\t" + gs.toString()+ 
                                        "\t" + df.format((double)(gs.getNumHomeWins()+gs.getNumDraws()+gs.getNumAwayWins())/totalPartidos*100) +
                                        "\t" + df.format((double)gs.getNumHomeWins()/(gs.getNumHomeWins()+gs.getNumDraws()+gs.getNumAwayWins())*100) +
@@ -158,7 +139,6 @@ public class GoalSupremacyMethod implements RatingMethod {
                                        + "\n");
               }
               System.out.println(totalPartidos);           
-            br.close();
             bwDiferencia.close();
             bwGoalSupremacy.close();
                  
