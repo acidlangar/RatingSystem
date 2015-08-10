@@ -17,18 +17,17 @@ public class SQLConnection {
         super();
     }
     
-    public static Statement connectToID_BT() {
-        Statement stm = null;
+    public static Connection connectToID_BT() {
+        Connection con = null;
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            Connection con = DriverManager.getConnection(url, userName, password);
-            stm = con.createStatement();
+            con = DriverManager.getConnection(url, userName, password);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return stm;
+        return con;
     }
     
 }

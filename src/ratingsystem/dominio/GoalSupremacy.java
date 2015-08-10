@@ -7,8 +7,7 @@ public class GoalSupremacy {
     private int numDraws;
     
     private int numAwayWins;
-
-
+    
     public void setNumHomeWins(int numHomeWins) {
         this.numHomeWins = numHomeWins;
     }

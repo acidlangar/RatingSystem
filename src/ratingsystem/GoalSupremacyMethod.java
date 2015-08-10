@@ -1,20 +1,14 @@
 package ratingsystem;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.text.DecimalFormat;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
+
+import ratingsystem.dao.GoalSupremacyDao;
+import ratingsystem.dao.GoalSupremacyDaoImpl;
 
 import ratingsystem.dominio.GoalSupremacy;
 import ratingsystem.dominio.Partido;
@@ -29,18 +23,12 @@ public class GoalSupremacyMethod implements RatingMethod {
     @Override
     public void procesarPartidos(List<Partido> partidosSource) {
         try {
-            int liga = 1;
-            String temporada = "2004";
+            int liga = partidosSource.get(0).getLiga();
+            String temporada = partidosSource.get(0).getTemporada();
             List<Partido> partidosTemporada = new ArrayList<Partido>();
             List<Partido> partidos = new ArrayList<Partido>();
             Integer totalPartidos = 0;
                               
-            File fileDestinoDiferencia = new File("C:\\Users\\edgar\\Downloads\\datos\\partidosGoles.txt");
-            BufferedWriter bwDiferencia = new BufferedWriter(new FileWriter(fileDestinoDiferencia));
-            
-             File fileDestinoGoalSupremacy = new File("C:\\Users\\edgar\\Downloads\\datos\\goalSupremacy.txt");
-             BufferedWriter bwGoalSupremacy = new BufferedWriter(new FileWriter(fileDestinoGoalSupremacy));
-
              Map<Integer, GoalSupremacy> goalSupremacyMapa = new TreeMap<Integer, GoalSupremacy>();
              GoalSupremacy goalSupremacy;
                  
@@ -49,9 +37,6 @@ public class GoalSupremacyMethod implements RatingMethod {
                  if (partido.getLiga() != liga || !partido.getTemporada().equals(temporada)) {
                          liga = partido.getLiga();
                          temporada = partido.getTemporada();
-                         for (Partido partidoL:partidosTemporada) {
-                                 bwDiferencia.write(partidoL.toString()+ "\n");
-                         }
                          partidos.addAll(partidosTemporada);
                          partidosTemporada = new ArrayList<Partido>();
                  }
@@ -117,33 +102,16 @@ public class GoalSupremacyMethod implements RatingMethod {
                     
                     goalSupremacyMapa.put(diferencia, goalSupremacy);
                 }                
-
-                
-                 
+ 
             }
             
-            for (Partido partidoL:partidosTemporada) {
-                bwDiferencia.write(partidoL.toString()+ "\n");
-             }
+            GoalSupremacyDao goalSupremacyDao = new GoalSupremacyDaoImpl();
+            goalSupremacyDao.insertarGoalSupremacy(liga,goalSupremacyMapa,totalPartidos);
             
-             DecimalFormat df = new DecimalFormat("###.##");
-             Iterator i = goalSupremacyMapa.keySet().iterator();
-             while(i.hasNext()){
-                 Integer key = (Integer) i.next();
-                 GoalSupremacy gs = goalSupremacyMapa.get(key);
-                 bwGoalSupremacy.write(key + "\t" + gs.toString()+ 
-                                       "\t" + df.format((double)(gs.getNumHomeWins()+gs.getNumDraws()+gs.getNumAwayWins())/totalPartidos*100) +
-                                       "\t" + df.format((double)gs.getNumHomeWins()/(gs.getNumHomeWins()+gs.getNumDraws()+gs.getNumAwayWins())*100) +
-                                       "\t" + df.format((double)gs.getNumDraws()/(gs.getNumHomeWins()+gs.getNumDraws()+gs.getNumAwayWins())*100) +
-                                       "\t" + df.format((double)gs.getNumAwayWins()/(gs.getNumHomeWins()+gs.getNumDraws()+gs.getNumAwayWins())*100)
-                                       + "\n");
-              }
-              System.out.println(totalPartidos);           
-            bwDiferencia.close();
-            bwGoalSupremacy.close();
+            System.out.println(totalPartidos);
                  
-         }catch(IOException e) {
-                 e.printStackTrace();
-         }
+         } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

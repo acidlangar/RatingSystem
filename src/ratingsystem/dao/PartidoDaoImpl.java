@@ -1,9 +1,9 @@
 package ratingsystem.dao;
 
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,15 +19,16 @@ public class PartidoDaoImpl implements PartidoDao {
     }
 
     @Override
-    public List<Partido> consultarPartidos(String criteria) {
+    public List<Partido> consultarPartidosByLiga(int cdLiga) throws SQLException {
         
         List<Partido> partidos = new ArrayList<Partido>();
-        Statement statement = SQLConnection.connectToID_BT();
+        Connection con = SQLConnection.connectToID_BT();
+        PreparedStatement preparedStmt = null;
         
-        if (statement != null) {            
+        if (con != null) {            
             
             try {
-                ResultSet rs = statement.executeQuery("SELECT cd_liga," +
+                preparedStmt = con.prepareStatement("SELECT cd_liga," +
                                                         "temporada," +
                                                         "fecha," +
                                                         "equipo_local," +
@@ -41,7 +42,10 @@ public class PartidoDaoImpl implements PartidoDao {
                                                         "dif_goles_local," +
                                                         "dif_goles_visitante " +
                                                         "FROM PARTIDO " +
-                                                        "WHERE "+criteria);
+                                                        "WHERE cd_liga = ?");
+                preparedStmt.setInt(1, cdLiga);
+                
+                ResultSet rs = preparedStmt.executeQuery();
                 if(rs!=null){
                     Partido partido;
                     while (rs.next()){
@@ -69,6 +73,14 @@ public class PartidoDaoImpl implements PartidoDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            }
+            finally {
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
             }
         }
         return partidos;

@@ -47,11 +47,16 @@ public class Principal {
     public static void main(String[] args) {
 
         PartidoDao partidoDao = new PartidoDaoImpl();
-        String criteria = "cd_liga=1";
-        List<Partido> partidos = partidoDao.consultarPartidos(criteria);
-        
-        RatingMethod metodo = new GoalSupremacyMethod();
-        metodo.procesarPartidos(partidos);        
+        int cdLiga = 9;
+        try {
+            List<Partido> partidos = partidoDao.consultarPartidosByLiga(cdLiga);
+
+            RatingMethod metodo = new GoalSupremacyMethod();
+            metodo.procesarPartidos(partidos);        
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
                 
     }
 
