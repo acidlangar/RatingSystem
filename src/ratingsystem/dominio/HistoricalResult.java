@@ -1,6 +1,6 @@
 package ratingsystem.dominio;
 
-public class GoalSupremacy {
+public class HistoricalResult {
     
     private int numHomeWins;
     

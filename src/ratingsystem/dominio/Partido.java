@@ -7,6 +7,7 @@ public class Partido {
     private int liga;
      private String temporada;
      private Calendar fecha;
+     private String fechaStr;
      private String eqL;
      private String eqV;
      private int golesL;
@@ -17,6 +18,9 @@ public class Partido {
      private float cuota2;
      private int diffGL;
      private int diffGV;
+     private int rankingLocal;
+     private int rankingVisitante;
+     
      /**
       * @return the liga
       */
@@ -53,9 +57,18 @@ public class Partido {
      public void setFecha(Calendar fecha) {
              this.fecha = fecha;
      }
-     /**
-      * @return the eqL
-      */
+
+    public void setFechaStr(String fechaStr) {
+        this.fechaStr = fechaStr;
+    }
+
+    public String getFechaStr() {
+        return fechaStr;
+    }
+
+    /**
+     * @return the eqL
+     */
      public String getEqL() {
              return eqL;
      }
@@ -173,8 +186,24 @@ public class Partido {
      public void setDiffGV(int diffGV) {
              this.diffGV = diffGV;
      }
-     
-     /* (non-Javadoc)
+
+
+    public void setRankingLocal(int rankingLocal) {
+        this.rankingLocal = rankingLocal;
+    }
+
+    public int getRankingLocal() {
+        return rankingLocal;
+    }
+
+    public void setRankingVisitante(int rankingVisitante) {
+        this.rankingVisitante = rankingVisitante;
+    }
+
+    public int getRankingVisitante() {
+        return rankingVisitante;
+    }
+    /* (non-Javadoc)
       * @see java.lang.Object#toString()
       */
      @Override

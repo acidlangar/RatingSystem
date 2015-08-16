@@ -9,7 +9,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Iterator;
 import java.util.Map;
 import ratingsystem.connection.SQLConnection;
-import ratingsystem.dominio.GoalSupremacy;
+import ratingsystem.dominio.HistoricalResult;
 
 public class GoalSupremacyDaoImpl implements GoalSupremacyDao {
     public GoalSupremacyDaoImpl() {
@@ -17,7 +17,7 @@ public class GoalSupremacyDaoImpl implements GoalSupremacyDao {
     }
 
     @Override
-    public void insertarGoalSupremacy(int cdLiga, Map<Integer, GoalSupremacy> mapa, int totalPartidos) throws SQLException {
+    public void insertarGoalSupremacy(int cdLiga, Map<Integer, HistoricalResult> mapa, int totalPartidos) throws SQLException {
         
         Connection con = SQLConnection.connectToID_BT();
         PreparedStatement preparedStatement = null;
@@ -38,7 +38,7 @@ public class GoalSupremacyDaoImpl implements GoalSupremacyDao {
             
             while(i.hasNext()){
                 Integer key = (Integer) i.next();
-                GoalSupremacy gs = mapa.get(key);
+                HistoricalResult gs = mapa.get(key);
                 
                 preparedStatement.setInt(1, cdLiga);
                 preparedStatement.setInt(2, key);

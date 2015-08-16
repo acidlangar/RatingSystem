@@ -30,6 +30,7 @@ public class PartidoDaoImpl implements PartidoDao {
             try {
                 preparedStmt = con.prepareStatement("SELECT cd_liga," +
                                                         "temporada," +
+                                                        "fecha_str," +
                                                         "fecha," +
                                                         "equipo_local," +
                                                         "equipo_visitante," +
@@ -53,6 +54,7 @@ public class PartidoDaoImpl implements PartidoDao {
                         partido = new Partido();
                         partido.setLiga(rs.getInt("cd_liga"));
                         partido.setTemporada(rs.getString("temporada"));
+                        partido.setFechaStr(rs.getString("fecha_str"));
                         Calendar fecha = Calendar.getInstance();
                         fecha.setTime(rs.getTimestamp("fecha"));
                         partido.setFecha(fecha);

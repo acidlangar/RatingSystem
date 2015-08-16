@@ -1,4 +1,4 @@
-package ratingsystem;
+package ratingsystem.service;
 
 import java.sql.SQLException;
 
@@ -10,8 +10,9 @@ import java.util.TreeMap;
 import ratingsystem.dao.GoalSupremacyDao;
 import ratingsystem.dao.GoalSupremacyDaoImpl;
 
-import ratingsystem.dominio.GoalSupremacy;
+import ratingsystem.dominio.HistoricalResult;
 import ratingsystem.dominio.Partido;
+
 
 public class GoalSupremacyMethod implements RatingMethod {
     public static final int PARTIDOS_FORMA = 6;
@@ -29,8 +30,8 @@ public class GoalSupremacyMethod implements RatingMethod {
             List<Partido> partidos = new ArrayList<Partido>();
             Integer totalPartidos = 0;
                               
-             Map<Integer, GoalSupremacy> goalSupremacyMapa = new TreeMap<Integer, GoalSupremacy>();
-             GoalSupremacy goalSupremacy;
+             Map<Integer, HistoricalResult> goalSupremacyMapa = new TreeMap<Integer, HistoricalResult>();
+             HistoricalResult goalSupremacy;
                  
             for (Partido partido : partidosSource) {
                 
@@ -85,7 +86,7 @@ public class GoalSupremacyMethod implements RatingMethod {
                     totalPartidos++;
                     goalSupremacy = goalSupremacyMapa.get(diferencia);
                     if( goalSupremacy == null ) {
-                        goalSupremacy = new GoalSupremacy();
+                        goalSupremacy = new HistoricalResult();
                     }
                     
                     switch (partido.getResultado()) {
@@ -114,4 +115,5 @@ public class GoalSupremacyMethod implements RatingMethod {
             e.printStackTrace();
         }
     }
+    
 }

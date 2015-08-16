@@ -1,4 +1,4 @@
-package ratingsystem;
+package ratingsystem.service;
 
 import java.util.List;
 
