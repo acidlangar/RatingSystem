@@ -158,7 +158,7 @@ public class RateformMethod implements RatingMethod {
                 resultado = VICTORIA_LOCAL;
                 cuota = partido.getCuota1();
             }
-            else if (diferencia <= -100 && diferencia >=-250) {
+            else if (diferencia <= -150 && diferencia >=-250) {
                 resultado = EMPATE;
                 cuota = partido.getCuotaX();
             }
