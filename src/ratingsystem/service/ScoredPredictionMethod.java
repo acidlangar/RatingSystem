@@ -90,13 +90,13 @@ public class ScoredPredictionMethod {
                     Partido partidoPrevio = partidosTemporada.get(count-1);
                     String resultadoPartidoPrevio = partidoPrevio.getResultado().trim();
                     if (countLocal != PARTIDOS_FORMA && partidoPrevio.getEqL().equals(partido.getEqL())) {
-                    	HGF += partido.getGolesL();
-                    	HGA += partido.getGolesV();
+                    	HGF += partidoPrevio.getGolesL();
+                    	HGA += partidoPrevio.getGolesV();
                         countLocal++;
                     }
                     if (countVisitante != PARTIDOS_FORMA && partidoPrevio.getEqV().equals(partido.getEqV())) {
-                    	AGF += partido.getGolesV();
-                    	AGA += partido.getGolesL();
+                    	AGF += partidoPrevio.getGolesV();
+                    	AGA += partidoPrevio.getGolesL();
                         countVisitante++;
                     }
                     
