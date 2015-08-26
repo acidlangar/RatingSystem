@@ -37,10 +37,7 @@ public class RateformMethod implements RatingMethod {
             int liga = partidosSource.get(0).getLiga();
             String temporada = partidosSource.get(0).getTemporada();
             List<Partido> partidosTemporada = new ArrayList<Partido>();
-            List<Partido> partidos = new ArrayList<Partido>();
             Integer totalPartidos = 0, codPronostico = 1;
-                              
-            RateformDao rateformDao = new RateformDaoImpl();
                  
             for (Partido partido : partidosSource) {
                 
@@ -50,7 +47,6 @@ public class RateformMethod implements RatingMethod {
                  if (partido.getLiga() != liga || !partido.getTemporada().equals(temporada)) {
                          liga = partido.getLiga();
                          temporada = partido.getTemporada();
-                         partidos.addAll(partidosTemporada);
                          partidosTemporada = new ArrayList<Partido>();
                  }
                 
@@ -128,7 +124,6 @@ public class RateformMethod implements RatingMethod {
                         } 
                         
                         if (localFound && visitFound){
-                            //rateformDao.insertarRateform(partido);
                             this.generarPronostico(partido, codPronostico);
                             codPronostico++;
                             break;
@@ -154,11 +149,11 @@ public class RateformMethod implements RatingMethod {
             int stake = 0;
             float cuota = 0;
             
-            if (diferencia > -100) {
+            if (diferencia > -120) {
                 resultado = VICTORIA_LOCAL;
                 cuota = partido.getCuota1();
             }
-            else if (diferencia <= -150 && diferencia >=-250) {
+            else if (diferencia <= -120 && diferencia >=-240) {
                 resultado = EMPATE;
                 cuota = partido.getCuotaX();
             }
@@ -171,7 +166,7 @@ public class RateformMethod implements RatingMethod {
                 stake = 3;
             }
             else {
-                 if(cuota<1.5) {
+                 /* if(cuota<1.5) {
                      stake = 10;
                  }
                  else if(cuota>=1.5 && cuota<1.7) {
@@ -200,7 +195,8 @@ public class RateformMethod implements RatingMethod {
                  }
                  else if(cuota>=3.1) {
                      stake = 1;
-                 }
+                 } */
+                stake = 4;
             }
             
             PronosticoDao pronosticoDao = new PronosticoDaoImpl();

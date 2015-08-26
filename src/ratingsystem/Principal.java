@@ -24,13 +24,13 @@ public class Principal {
         int cdLiga = 0;
         try {
             for (cdLiga = 1; cdLiga<=1; cdLiga++) {
-                List<Partido> partidos = partidoDao.consultarPartidosByLiga(cdLiga);
+                List<Partido> partidos = partidoDao.consultarPartidosByTemporada("2014");
     
                 /* RatingMethod metodo = new GoalSupremacyMethod();
                 metodo.procesarPartidos(partidos); */
                 
                 RatingMethod metodo = new RateformMethod();
-                metodo.procesarPartidos(partidos);
+                metodo.procesarPartidos(partidos); 
             }
 
         } catch (SQLException e) {

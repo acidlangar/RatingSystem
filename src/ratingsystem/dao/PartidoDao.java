@@ -9,4 +9,8 @@ import ratingsystem.dominio.Partido;
 public interface PartidoDao {
     
     public List<Partido> consultarPartidosByLiga(int cdLiga) throws SQLException;
+    
+    public List<Partido> consultarPartidos() throws SQLException;
+    
+    public List<Partido> consultarPartidosByTemporada(String temporada) throws SQLException;
 }
