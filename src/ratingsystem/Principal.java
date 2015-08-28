@@ -9,9 +9,11 @@ import ratingsystem.dao.PartidoDaoImpl;
 
 import ratingsystem.dominio.Partido;
 
+import ratingsystem.service.FootyforecastMethod;
 import ratingsystem.service.GoalSupremacyMethod;
 import ratingsystem.service.RateformMethod;
 import ratingsystem.service.RatingMethod;
+import ratingsystem.service.ScoredPredictionMethod;
 
 public class Principal {
     public Principal() {
@@ -27,10 +29,16 @@ public class Principal {
                 List<Partido> partidos = partidoDao.consultarPartidosByTemporada("2014");
     
                 /* RatingMethod metodo = new GoalSupremacyMethod();
-                metodo.procesarPartidos(partidos); */
+                metodo.procesarPartidos(partidos); 
                 
                 RatingMethod metodo = new RateformMethod();
                 metodo.procesarPartidos(partidos); 
+                
+                RatingMethod metodo = new FootyforecastMethod();
+                metodo.procesarPartidos(partidos); */
+                
+                RatingMethod metodo = new ScoredPredictionMethod();
+                metodo.procesarPartidos(partidos);
             }
 
         } catch (SQLException e) {

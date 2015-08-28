@@ -14,81 +14,46 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import ratingsystem.dao.PronosticoDao;
+import ratingsystem.dao.PronosticoDaoImpl;
+
 import ratingsystem.dominio.Partido;
 
 /**
  * @author Edgar.Rodriguez
  *
  */
-public class ScoredPredictionMethod {
+public class ScoredPredictionMethod implements RatingMethod {
     
-	public static final int PARTIDOS_FORMA = 5;	
-	private static final int METODO = 4;
-	
-	public static void main(String[] args) {
-		
-		ScoredPredictionMethod rf = new ScoredPredictionMethod();
-		rf.procesarPartidos(1, "2004");
+    public static final int PARTIDOS_FORMA = 5;
 
-	}
+    @Override
+    public void procesarPartidos(List<Partido> partidosSource) {
 
-	private void procesarPartidos(int liga, String temporada) {
-
-		try {
-			
-			File f = new File("C:\\Users\\edgar.rodriguez\\Documents\\2_PARTIDO.bcp");
-			BufferedReader br = new BufferedReader(new FileReader(f));
-		    String line;
-		    int codigoPronostico = 0;
-		    List<Partido> partidosTemporada = new ArrayList<Partido>();
-		    
-			File f2 = new File("C:\\Users\\edgar.rodriguez\\Documents\\pronostico.txt");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(f2));
-
-		    
-		    while ((line = br.readLine()) != null) {
+        try {
+                
+            int liga = partidosSource.get(0).getLiga();
+            String temporada = partidosSource.get(0).getTemporada();
+            int codigoPronostico = 0;
+            List<Partido> partidosTemporada = new ArrayList<Partido>();
+            
+            for (Partido partido : partidosSource) {
 		    	
-		    	StringTokenizer st = new StringTokenizer(line, "\t");
-		    	
-		    	Partido partido = new Partido();
-		    	partido.setLiga(Integer.parseInt(st.nextToken()));
-		    	partido.setTemporada(st.nextToken());
-		    	partido.setFechaStr(st.nextToken());
-		    	Calendar fecha = Calendar.getInstance();
-		    	st.nextToken();
-		    	partido.setFecha(fecha);
-		    	partido.setEqL(st.nextToken());
-		    	partido.setEqV(st.nextToken());
-		    	partido.setGolesL(Integer.parseInt(st.nextToken()));
-		    	partido.setGolesV(Integer.parseInt(st.nextToken()));
-		    	partido.setResultado(st.nextToken());
-		    	partido.setCuota1(Float.parseFloat(st.nextToken()));
-		    	partido.setCuotaX(Float.parseFloat(st.nextToken()));
-		    	partido.setCuota2(Float.parseFloat(st.nextToken()));
-		    	partido.setDiffGL(Integer.parseInt(st.nextToken()));
-		    	partido.setDiffGV(Integer.parseInt(st.nextToken()));
-		    	partido.setRankingLocal(1000);
-		    	partido.setRankingVisitante(1000);
-		    	
-		    	if (partido.getLiga() != liga) {
-		    		break;		    		
-		    	}
-		    	
-		    	if (!partido.getTemporada().equals(temporada)) {
+                if (partido.getLiga() != liga || !partido.getTemporada().equals(temporada)) {
+                    liga = partido.getLiga();
                     temporada = partido.getTemporada();
                     partidosTemporada = new ArrayList<Partido>();
-	            }
-	                    
-	            int countLocal = 0, countVisitante = 0;
-	            int HGF = 0, HGA = 0, AGF = 0, AGA = 0;
-	            int HGP = 0, AGP = 0, GPD = 0;
-	            String resultado = "";
-	            int stake = 0;
-	            
-	            for (int count=partidosTemporada.size(); count>0; count--) {
+                }
+                        
+                int countLocal = 0, countVisitante = 0;
+                int HGF = 0, HGA = 0, AGF = 0, AGA = 0;
+                int HGP = 0, AGP = 0, GPD = 0;
+                String resultado = "";
+                int stake = 0;
+                
+                for (int count=partidosTemporada.size(); count>0; count--) {
 	                    
                     Partido partidoPrevio = partidosTemporada.get(count-1);
-                    String resultadoPartidoPrevio = partidoPrevio.getResultado().trim();
                     if (countLocal != PARTIDOS_FORMA && partidoPrevio.getEqL().equals(partido.getEqL())) {
                     	HGF += partidoPrevio.getGolesL();
                     	HGA += partidoPrevio.getGolesV();
@@ -107,9 +72,10 @@ public class ScoredPredictionMethod {
                     	GPD = HGP - AGP;
                     	
                     	System.out.println(GPD);
-                    	
+                        
                     	// definir resultado y stake
-                    	if (GPD >= 2) {
+                        stake = 4;
+                        if (GPD >= 2) {
                     		resultado = "1";
                     	}
                     	else if (GPD > -2 && GPD < 2) {
@@ -121,32 +87,24 @@ public class ScoredPredictionMethod {
                     	}
                     	
                     	// insertarPronostico
-                    	codigoPronostico++;
-                    	bw.write(METODO + "\t" + 
-                    			codigoPronostico + "\t" +
-                    			liga + "\t" +
-                    			partido.getTemporada() + "\t" +
-                    			partido.getFechaStr() + "\t" +
-                    			partido.getEqL() + "\t" +
-                    			resultado + "\t" +
-                    			stake  + "\n");
+                        codigoPronostico++;
+                        PronosticoDao pronosticoDao = new PronosticoDaoImpl();
+                        pronosticoDao.insertarPronostico(partido, 5, codigoPronostico, resultado, stake);
                     	
                         break;
                     }
                     
-	            }
-	            
-	            partidosTemporada.add(partido);
-	            //System.out.println(partido);
+                }
+                
+                partidosTemporada.add(partido);
+                System.out.println(partido);
+                
+            }
 		    
-		    }
-		    br.close();
-		    bw.close();
-		    
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
 		
-	}
+    }
 
 }

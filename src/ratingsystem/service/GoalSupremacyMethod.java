@@ -27,7 +27,6 @@ public class GoalSupremacyMethod implements RatingMethod {
             int liga = partidosSource.get(0).getLiga();
             String temporada = partidosSource.get(0).getTemporada();
             List<Partido> partidosTemporada = new ArrayList<Partido>();
-            List<Partido> partidos = new ArrayList<Partido>();
             Integer totalPartidos = 0;
                               
              Map<Integer, HistoricalResult> goalSupremacyMapa = new TreeMap<Integer, HistoricalResult>();
@@ -35,10 +34,24 @@ public class GoalSupremacyMethod implements RatingMethod {
                  
             for (Partido partido : partidosSource) {
                 
-                 if (partido.getLiga() != liga || !partido.getTemporada().equals(temporada)) {
-                         liga = partido.getLiga();
+                if (partido.getTemporada().equals("2014") || 
+                    partido.getTemporada().equals("2014-2015") ||
+                    partido.getTemporada().equals("2014/2015")) {
+                    continue;
+                }
+                
+                if (partido.getLiga() != liga) {
+                    
+                    GoalSupremacyDao goalSupremacyDao = new GoalSupremacyDaoImpl();
+                    goalSupremacyDao.insertarGoalSupremacy(liga,goalSupremacyMapa,totalPartidos);
+                    totalPartidos = 0;
+                    goalSupremacyMapa = new TreeMap<Integer, HistoricalResult>();
+                    liga = partido.getLiga();
+                    
+                }
+                
+                 if (!partido.getTemporada().equals(temporada)) {
                          temporada = partido.getTemporada();
-                         partidos.addAll(partidosTemporada);
                          partidosTemporada = new ArrayList<Partido>();
                  }
                          
@@ -89,7 +102,7 @@ public class GoalSupremacyMethod implements RatingMethod {
                         goalSupremacy = new HistoricalResult();
                     }
                     
-                    switch (partido.getResultado()) {
+                    switch (partido.getResultado().trim()) {
                         case "1": 
                                 goalSupremacy.setNumHomeWins(goalSupremacy.getNumHomeWins()+1);   
                                 break;

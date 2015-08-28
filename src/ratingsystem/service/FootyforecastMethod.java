@@ -3,17 +3,11 @@
  */
 package ratingsystem.service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
+
+import ratingsystem.dao.PronosticoDao;
+import ratingsystem.dao.PronosticoDaoImpl;
 
 import ratingsystem.dominio.Partido;
 
@@ -21,75 +15,40 @@ import ratingsystem.dominio.Partido;
  * @author Edgar.Rodriguez
  *
  */
-public class FootyforecastMethod {
+public class FootyforecastMethod implements RatingMethod {
     
-	public static final int PARTIDOS_FORMA = 6;	
-	private static final String VICTORIA_LOCAL = "1";
-	private static final String VICTORIA_VISITANTE = "2";
-	private static final String EMPATE = "X";
-	private static final int METODO = 3;
+    public static final int PARTIDOS_FORMA = 6;	
+    private static final String VICTORIA_LOCAL = "1";
+    private static final String VICTORIA_VISITANTE = "2";
+    private static final String EMPATE = "X";
+    private static final int METODO = 3;
 	
-	public static void main(String[] args) {
-		
-		FootyforecastMethod rf = new FootyforecastMethod();
-		rf.procesarPartidos(1, "2004");
 
-	}
+    @Override
+    public void procesarPartidos(List<Partido> partidosSource) {
 
-	private void procesarPartidos(int liga, String temporada) {
+        try {
+                
+            int liga = partidosSource.get(0).getLiga();
+            String temporada = partidosSource.get(0).getTemporada();
+            int codigoPronostico = 0;
+            List<Partido> partidosTemporada = new ArrayList<Partido>();
 
-		try {
-			
-			File f = new File("C:\\Users\\edgar.rodriguez\\Documents\\2_PARTIDO.bcp");
-			BufferedReader br = new BufferedReader(new FileReader(f));
-		    String line;
-		    int codigoPronostico = 0;
-		    List<Partido> partidosTemporada = new ArrayList<Partido>();
-		    
-			File f2 = new File("C:\\Users\\edgar.rodriguez\\Documents\\pronostico.txt");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(f2));
-
-		    
-		    while ((line = br.readLine()) != null) {
-		    	
-		    	StringTokenizer st = new StringTokenizer(line, "\t");
-		    	
-		    	Partido partido = new Partido();
-		    	partido.setLiga(Integer.parseInt(st.nextToken()));
-		    	partido.setTemporada(st.nextToken());
-		    	partido.setFechaStr(st.nextToken());
-		    	Calendar fecha = Calendar.getInstance();
-		    	st.nextToken();
-		    	partido.setFecha(fecha);
-		    	partido.setEqL(st.nextToken());
-		    	partido.setEqV(st.nextToken());
-		    	partido.setGolesL(Integer.parseInt(st.nextToken()));
-		    	partido.setGolesV(Integer.parseInt(st.nextToken()));
-		    	partido.setResultado(st.nextToken());
-		    	partido.setCuota1(Float.parseFloat(st.nextToken()));
-		    	partido.setCuotaX(Float.parseFloat(st.nextToken()));
-		    	partido.setCuota2(Float.parseFloat(st.nextToken()));
-		    	partido.setDiffGL(Integer.parseInt(st.nextToken()));
-		    	partido.setDiffGV(Integer.parseInt(st.nextToken()));
-		    	partido.setRankingLocal(1000);
-		    	partido.setRankingVisitante(1000);
-		    	
-		    	if (partido.getLiga() != liga) {
-		    		break;		    		
-		    	}
-		    	
-		    	if (!partido.getTemporada().equals(temporada)) {
+            for (Partido partido : partidosSource) {
+                
+                if (partido.getLiga() != liga || !partido.getTemporada().equals(temporada)) {
+                    liga = partido.getLiga();
                     temporada = partido.getTemporada();
                     partidosTemporada = new ArrayList<Partido>();
-	            }
+                }
 	                    
-	            int countLocal = 0, countVisitante = 0;
-	            int puntosLocal = 0, puntosVisitante = 0;
-	            float FFPHome = 0, FFPAway = 0, FFPForcast = 0;
-	            String resultado = "";
-	            int stake = 0;
-	            
-	            for (int count=partidosTemporada.size(); count>0; count--) {
+                int countLocal = 0, countVisitante = 0;
+                int puntosLocal = 0, puntosVisitante = 0;
+                float FFPHome = 0, FFPAway = 0, FFPForcast = 0;
+                String resultado = "";
+                int stake = 0;
+                
+                for (int count=partidosTemporada.size(); count>0; count--) {
 	                    
                     Partido partidoPrevio = partidosTemporada.get(count-1);
                     String resultadoPartidoPrevio = partidoPrevio.getResultado().trim();
@@ -153,31 +112,24 @@ public class FootyforecastMethod {
                     	
                     	// insertarPronostico
                     	codigoPronostico++;
-                    	bw.write(METODO + "\t" + 
-                    			codigoPronostico + "\t" +
-                    			liga + "\t" +
-                    			partido.getTemporada() + "\t" +
-                    			partido.getFechaStr() + "\t" +
-                    			partido.getEqL() + "\t" +
-                    			resultado + "\t" +
-                    			stake  + "\n");
-                    	
+                        PronosticoDao pronosticoDao = new PronosticoDaoImpl();
+                        pronosticoDao.insertarPronostico(partido, 4, codigoPronostico, resultado, stake);
+                                            	
                         break;
+                        
                     }
                     
-	            }
-	            
-	            partidosTemporada.add(partido);
-	            //System.out.println(partido);
+                }
+                
+                partidosTemporada.add(partido);
+                System.out.println(partido);
+                
+            }
 		    
-		    }
-		    br.close();
-		    bw.close();
-		    
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
 		
-	}
+    }
 
 }
